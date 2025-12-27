@@ -61,6 +61,21 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Unlimited Support License',
       'Full API Access'
     ]
+  },
+  {
+    type: PlanType.CUSTOM,
+    minPrice: 0,
+    maxPrice: 0,
+    description: 'Tailor-made infrastructure for large-scale enterprise needs.',
+    features: [
+      'Full Source Code Ownership',
+      'Private Dedicated Node Matrix',
+      'Custom Security Integration',
+      'On-Premise Deployment',
+      'Lifetime Security Updates',
+      'Dedicated Dev Ops Team',
+      'White-Label Solutions'
+    ]
   }
 ];
 

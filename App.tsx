@@ -4,35 +4,22 @@ import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import Legal from './components/Legal';
 import Documentation from './components/Documentation';
-import { User, PlanType } from './types';
+import ContactModal from './components/ContactModal';
+import Logo from './components/Logo';
+import { PlanType } from './types';
 import { PRICING_PLANS, WHATSAPP_NUMBER } from './constants';
 import { sound } from './services/soundService';
 
 type AppState = 'home' | 'docs' | 'terms' | 'privacy';
 
 const App: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
   const [page, setPage] = useState<AppState>('home');
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [activeRoute, setActiveRoute] = useState({ from: '', to: '' });
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [page]);
-
-  const handleLogin = () => {
-    sound.playSuccess();
-    // Simulate production-level verified session
-    setUser({
-      id: 'visatech_verified_prod_8829',
-      name: 'Verified Developer',
-      email: 'authorized.dev@apolloit.cloud',
-      picture: 'https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Apollo'
-    });
-  };
-
-  const handleLogout = () => {
-    sound.playClick();
-    setUser(null);
-  };
 
   const setPageWithSound = (p: AppState) => {
     sound.playTransition();
@@ -54,7 +41,14 @@ const App: React.FC = () => {
     }
   };
 
-  const openWhatsApp = () => {
+  const handleOpenContact = (from?: string, to?: string) => {
+    if (from && to) {
+      setActiveRoute({ from, to });
+    }
+    setIsContactModalOpen(true);
+  };
+
+  const openWhatsAppDirect = () => {
     sound.playClick();
     window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, '')}`, '_blank');
   };
@@ -64,7 +58,17 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 overflow-x-hidden selection:bg-orange-500/40">
-      <Navbar user={user} onLogin={handleLogin} onLogout={handleLogout} onScrollTo={scrollToSection} />
+      <Navbar 
+        onContact={() => setIsContactModalOpen(true)} 
+        onScrollTo={scrollToSection} 
+      />
+
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={() => setIsContactModalOpen(false)} 
+        defaultFrom={activeRoute.from}
+        defaultTo={activeRoute.to}
+      />
 
       <main className="flex-grow pt-20">
         {/* Hero Section */}
@@ -73,6 +77,9 @@ const App: React.FC = () => {
           <div className="absolute top-1/4 -right-20 w-[500px] h-[500px] bg-orange-600/10 rounded-full blur-[120px] -z-10 animate-pulse"></div>
           
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative">
+            <div className="flex justify-center mb-8">
+              <Logo size={80} className="animate-pulse" />
+            </div>
             <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter mb-8 leading-[0.9] uppercase">
               FUTURE OF <br/>
               <span className="neon-gold-text">BOOKING AI</span>
@@ -105,7 +112,7 @@ const App: React.FC = () => {
 
         {/* Dashboard Section */}
         <section className="max-w-7xl mx-auto px-4 py-20 -mt-32 relative z-10">
-          <Dashboard />
+          <Dashboard onOpenContact={handleOpenContact} />
         </section>
 
         {/* Features Section */}
@@ -157,31 +164,37 @@ const App: React.FC = () => {
               <h2 className="text-5xl font-black text-white mt-4 uppercase">Scalable <span className="neon-gold-text">Dev Contracts</span></h2>
             </div>
             
-            <div className="grid lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-4 gap-8">
               {PRICING_PLANS.map((plan, i) => (
-                <div key={i} className={`p-1 bg-gradient-to-br ${i === 1 ? 'from-amber-500 to-orange-600' : 'from-white/10 to-transparent'} rounded-[3rem] transition transform hover:scale-[1.02]`}>
-                  <div className="bg-slate-950 h-full p-10 rounded-[2.85rem] flex flex-col">
+                <div key={i} className={`p-1 bg-gradient-to-br ${plan.type === PlanType.EXPRESS ? 'from-amber-500 to-orange-600' : 'from-white/10 to-transparent'} rounded-[3rem] transition transform hover:scale-[1.02]`}>
+                  <div className="bg-slate-950 h-full p-8 rounded-[2.85rem] flex flex-col">
                     <div className="mb-10">
                       <h3 className="text-xl font-black text-white uppercase tracking-widest mb-4">{plan.type}</h3>
                       <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-black text-white">${plan.minPrice}</span>
-                        <span className="text-slate-500 font-bold uppercase text-xs tracking-widest">+</span>
+                        {plan.type === PlanType.CUSTOM ? (
+                          <span className="text-3xl font-black text-amber-500 uppercase tracking-tighter">Custom Quote</span>
+                        ) : (
+                          <>
+                            <span className="text-5xl font-black text-white">${plan.minPrice}</span>
+                            <span className="text-slate-500 font-bold uppercase text-xs tracking-widest">+</span>
+                          </>
+                        )}
                       </div>
                     </div>
                     
-                    <ul className="space-y-5 mb-12 flex-grow">
+                    <ul className="space-y-4 mb-10 flex-grow">
                       {plan.features.map((feat, idx) => (
-                        <li key={idx} className="flex items-center gap-4 text-sm font-medium text-slate-300">
-                          <i className="fas fa-check text-amber-500"></i> {feat}
+                        <li key={idx} className="flex items-start gap-4 text-sm font-medium text-slate-300">
+                          <i className="fas fa-check text-amber-500 mt-1"></i> <span>{feat}</span>
                         </li>
                       ))}
                     </ul>
                     
                     <button 
-                      onClick={openWhatsApp}
-                      className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest transition ${i === 1 ? 'btn-neon-gold text-slate-950' : 'bg-white/5 text-white hover:bg-white/10 border border-white/5'}`}
+                      onClick={() => handleOpenContact()}
+                      className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest transition ${plan.type === PlanType.EXPRESS || plan.type === PlanType.CUSTOM ? 'btn-neon-gold text-slate-950' : 'bg-white/5 text-white hover:bg-white/10 border border-white/5'}`}
                     >
-                      Initialize Quote
+                      {plan.type === PlanType.CUSTOM ? 'Request Custom Build' : 'Initialize Quote'}
                     </button>
                   </div>
                 </div>
@@ -196,7 +209,7 @@ const App: React.FC = () => {
           <div className="max-w-4xl mx-auto px-4">
             <h2 className="text-6xl font-black text-white mb-10 leading-tight tracking-tighter uppercase">Ready to <span className="neon-gold-text">Scale</span> Your Agency?</h2>
             <button 
-              onClick={openWhatsApp}
+              onClick={() => handleOpenContact()}
               className="btn-neon-gold text-slate-950 px-16 py-6 rounded-3xl font-black text-xl uppercase tracking-widest shadow-[0_20px_50px_rgba(245,158,11,0.2)] hover:scale-105 transition"
             >
               Contact Specialist Team
@@ -209,8 +222,8 @@ const App: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid md:grid-cols-4 gap-12 mb-20">
             <div className="col-span-2 space-y-6">
-              <div className="flex items-center gap-2">
-                <div className="bg-amber-500 p-1.5 rounded-lg"><i className="fas fa-robot text-white"></i></div>
+              <div className="flex items-center gap-3">
+                <Logo size={32} />
                 <span className="font-black text-2xl tracking-tighter text-white uppercase">VISATECH AI</span>
               </div>
               <p className="text-slate-500 font-medium max-w-sm">The leading edge of visa appointment development. We build systems optimized for zero-latency execution.</p>
@@ -218,9 +231,9 @@ const App: React.FC = () => {
             
             <div className="space-y-4">
               <h5 className="font-black text-white uppercase text-xs tracking-[0.2em] mb-6">Legal Protocol</h5>
-              <button onClick={() => setPageWithSound('privacy')} className="block text-slate-500 hover:text-amber-500 font-bold transition">Privacy Policy</button>
-              <button onClick={() => setPageWithSound('terms')} className="block text-slate-500 hover:text-amber-500 font-bold transition">Terms of Service</button>
-              <button onClick={() => setPageWithSound('docs')} className="block text-slate-500 hover:text-amber-500 font-bold transition">Technical Docs</button>
+              <button onClick={() => setPageWithSound('privacy')} className="block text-slate-500 hover:text-amber-500 font-bold transition text-left">Privacy Policy</button>
+              <button onClick={() => setPageWithSound('terms')} className="block text-slate-500 hover:text-amber-500 font-bold transition text-left">Terms of Service</button>
+              <button onClick={() => setPageWithSound('docs')} className="block text-slate-500 hover:text-amber-500 font-bold transition text-left">Technical Docs</button>
             </div>
 
             <div className="space-y-4">
@@ -232,7 +245,7 @@ const App: React.FC = () => {
               </div>
             </div>
           </div>
-          <div className="pt-10 border-t border-white/5 text-center text-slate-600 font-black text-[10px] uppercase tracking-[0.3em] lowercase">
+          <div className="pt-10 border-t border-white/5 text-center text-slate-600 font-black text-[10px] uppercase tracking-[0.3em]">
             2026 visatech ai ,all rights reserved,powered by apolloit
           </div>
         </div>
@@ -241,7 +254,7 @@ const App: React.FC = () => {
       {/* Floating Action */}
       <div className="fixed bottom-8 right-8 z-[100] group flex flex-col items-end gap-4">
         <button 
-          onClick={openWhatsApp}
+          onClick={openWhatsAppDirect}
           className="w-20 h-20 bg-green-500 text-white rounded-[2rem] flex items-center justify-center text-4xl shadow-2xl hover:scale-110 active:scale-90 transition transform relative overflow-hidden"
         >
           <i className="fab fa-whatsapp relative z-10"></i>

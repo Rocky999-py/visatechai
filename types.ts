@@ -1,11 +1,4 @@
 
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  picture: string;
-}
-
 export interface Country {
   name: string;
   code: string;
@@ -15,7 +8,8 @@ export interface Country {
 export enum PlanType {
   BASIC = 'BASIC',
   STANDARD = 'STANDARD',
-  EXPRESS = 'EXPRESS'
+  EXPRESS = 'EXPRESS',
+  CUSTOM = 'CUSTOM'
 }
 
 export interface PricingPlan {
@@ -24,4 +18,13 @@ export interface PricingPlan {
   maxPrice: number;
   features: string[];
   description: string;
+}
+
+export interface ContactData {
+  name: string;
+  email: string;
+  phone: string;
+  fromCountry: string;
+  toCountry: string;
+  message: string;
 }
