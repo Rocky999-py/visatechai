@@ -1,9 +1,10 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
-
 export const generateVisaStrategy = async (fromCountry: string, toCountry: string) => {
+  // Create a new instance right before the call as per SDK guidelines
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  
   try {
     const response = await ai.models.generateContent({
       model: 'gemini-3-flash-preview',
