@@ -1,5 +1,5 @@
-
 {
+  "cleanUrls": false,
   "rewrites": [
     {
       "source": "/google531899b6211b75b5.html",
