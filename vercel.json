@@ -2,8 +2,8 @@
   "cleanUrls": false,
   "rewrites": [
     {
-      "source": "/google531899b6211b75b5.html",
-      "destination": "/google531899b6211b75b5.html"
+      "source": "/(google[a-z0-9]+\\.html)",
+      "destination": "/$1"
     },
     {
       "source": "/robots.txt",
