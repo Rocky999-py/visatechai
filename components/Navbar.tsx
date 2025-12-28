@@ -1,5 +1,4 @@
-
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { sound } from '../services/soundService';
 import Logo from './Logo';
 
@@ -10,6 +9,15 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ onContact, onScrollTo }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleNavClick = (id: string) => {
     sound.playClick();
@@ -24,12 +32,12 @@ const Navbar: React.FC<NavbarProps> = ({ onContact, onScrollTo }) => {
   };
 
   return (
-    <nav className="fixed top-0 w-full z-50 glass-dark border-b border-orange-500/20">
+    <nav className={`fixed top-0 w-full z-50 transition-all duration-500 ${isScrolled ? 'glass-dark py-2' : 'bg-transparent py-4'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-20 items-center">
-          <div className="flex items-center gap-4 cursor-pointer group" onClick={() => handleNavClick('hero')}>
-            <Logo size={44} className="group-hover:scale-110 transition-transform duration-300" />
-            <span className="font-bold text-2xl tracking-tighter text-white uppercase flex items-center">
+        <div className="flex justify-between h-16 sm:h-20 items-center">
+          <div className="flex items-center gap-3 sm:gap-4 cursor-pointer group" onClick={() => handleNavClick('hero')}>
+            <Logo size={36} className="group-hover:scale-110 transition-transform duration-300 sm:w-[44px] sm:h-[44px]" />
+            <span className="font-bold text-xl sm:text-2xl tracking-tighter text-white uppercase flex items-center">
               VISATECH <span className="neon-gold-text ml-1.5">AI</span>
             </span>
           </div>
@@ -38,8 +46,8 @@ const Navbar: React.FC<NavbarProps> = ({ onContact, onScrollTo }) => {
             {['features', 'pricing', 'docs'].map(item => (
               <button 
                 key={item}
-                onClick={() => handleNavClick(item === 'docs' ? 'docs' : item)} 
-                className="text-slate-300 hover:text-amber-400 font-semibold transition uppercase text-xs tracking-[0.2em]"
+                onClick={() => handleNavClick(item)} 
+                className="text-slate-300 hover:text-amber-400 font-semibold transition-colors uppercase text-[10px] tracking-[0.25em] outline-none"
               >
                 {item}
               </button>
@@ -47,39 +55,50 @@ const Navbar: React.FC<NavbarProps> = ({ onContact, onScrollTo }) => {
             
             <button 
               onClick={handleContactClick}
-              className="btn-neon-gold text-slate-950 px-6 py-2.5 rounded-full font-black text-sm uppercase tracking-widest shadow-xl flex items-center gap-2 transform active:scale-95 transition"
+              className="btn-neon-gold text-slate-950 px-6 py-2.5 rounded-full font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-2 transform active:scale-95 transition-all outline-none"
             >
               Consult Specialist
             </button>
           </div>
 
           <div className="md:hidden">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="text-amber-500 focus:outline-none p-2">
+            <button 
+              onClick={() => { sound.playClick(); setIsMenuOpen(!isMenuOpen); }} 
+              className="text-amber-500 focus:outline-none p-2 rounded-lg hover:bg-white/5 transition-colors"
+              aria-label="Toggle Menu"
+            >
               <i className={`fas ${isMenuOpen ? 'fa-times' : 'fa-bars'} text-2xl`}></i>
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isMenuOpen && (
-        <div className="md:hidden bg-slate-950 border-t border-orange-500/20 p-6 space-y-6 animate-in slide-in-from-top duration-300">
-          {['features', 'pricing', 'docs'].map(item => (
-            <button 
-              key={item}
-              onClick={() => handleNavClick(item)} 
-              className="block w-full text-left text-lg font-bold text-slate-300 hover:text-amber-400 border-b border-slate-900 pb-2 uppercase tracking-widest"
-            >
-              {item}
-            </button>
-          ))}
+        <div className="fixed inset-0 bg-slate-950/95 backdrop-blur-3xl z-40 md:hidden flex flex-col p-8 pt-24 space-y-8 animate-in fade-in slide-in-from-top duration-300">
+          <div className="flex flex-col gap-4">
+            {['features', 'pricing', 'docs'].map(item => (
+              <button 
+                key={item}
+                onClick={() => handleNavClick(item)} 
+                className="block w-full text-left text-3xl font-black text-slate-300 hover:text-amber-500 border-b border-white/5 pb-4 uppercase tracking-tighter transition-all"
+              >
+                {item}
+              </button>
+            ))}
+          </div>
           
           <button 
             onClick={handleContactClick}
-            className="w-full btn-neon-gold text-slate-950 py-4 rounded-2xl font-black uppercase tracking-widest flex items-center justify-center gap-3 shadow-2xl"
+            className="w-full btn-neon-gold text-slate-950 py-6 rounded-3xl font-black text-lg uppercase tracking-widest flex items-center justify-center gap-3 shadow-2xl mt-4"
           >
+            <i className="fas fa-paper-plane"></i>
             Consult Specialist
           </button>
+          
+          <div className="pt-12 text-center text-[10px] text-slate-600 font-bold uppercase tracking-[0.5em]">
+            VISATECH AI • PLATFORM v4.0
+          </div>
         </div>
       )}
     </nav>

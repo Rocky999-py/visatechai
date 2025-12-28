@@ -1,19 +1,19 @@
-
 import React from 'react';
 
 interface LogoProps {
   className?: string;
   size?: number;
+  glow?: boolean;
 }
 
-const Logo: React.FC<LogoProps> = ({ className = "", size = 40 }) => {
+const Logo: React.FC<LogoProps> = ({ className = "", size = 40, glow = false }) => {
   return (
     <div className={`relative flex items-center justify-center ${className}`} style={{ width: size, height: size }}>
       <svg 
         viewBox="0 0 100 100" 
         fill="none" 
         xmlns="http://www.w3.org/2000/svg"
-        className="w-full h-full drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]"
+        className={`w-full h-full ${glow ? 'animate-breathe' : 'drop-shadow-[0_0_8px_rgba(245,158,11,0.5)]'}`}
       >
         {/* Outer Shield / Hexagon Frame */}
         <path 
@@ -49,8 +49,8 @@ const Logo: React.FC<LogoProps> = ({ className = "", size = 40 }) => {
           </linearGradient>
         </defs>
       </svg>
-      {/* Subtle background glow */}
-      <div className="absolute inset-0 bg-amber-500/20 blur-xl rounded-full -z-10"></div>
+      {/* Dynamic background glow */}
+      <div className={`absolute inset-0 bg-amber-500/10 blur-[100px] rounded-full -z-10 ${glow ? 'scale-150 opacity-40 animate-pulse' : 'blur-xl'}`}></div>
     </div>
   );
 };

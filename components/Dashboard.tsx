@@ -36,16 +36,16 @@ const Dashboard: React.FC<DashboardProps> = ({ onOpenContact }) => {
             <div className="w-2 h-2 rounded-full bg-green-500 animate-ping"></div>
             <span className="font-mono text-[9px] text-green-500 uppercase tracking-[0.4em]">Node_Stream: Active</span>
           </div>
-          <span className="font-mono text-[9px] text-slate-600">ENCRYPTED_SSL_AES256</span>
+          <span className="font-mono text-[9px] text-slate-600 hidden sm:inline">ENCRYPTED_SSL_AES256</span>
         </div>
 
         {jsonContent && (
-          <div className="font-mono text-[11px] bg-slate-950 p-6 rounded-2xl border border-amber-500/20 text-amber-500/80 overflow-x-auto">
+          <div className="font-mono text-[10px] sm:text-[11px] bg-slate-950 p-4 sm:p-6 rounded-2xl border border-amber-500/20 text-amber-500/80 overflow-x-auto">
             <pre className="whitespace-pre-wrap">{jsonContent}</pre>
           </div>
         )}
 
-        <div className="bg-slate-900/50 p-6 rounded-2xl border border-white/5 relative overflow-hidden">
+        <div className="bg-slate-900/50 p-4 sm:p-6 rounded-2xl border border-white/5 relative overflow-hidden">
           <div className="absolute top-0 left-0 w-1 h-full bg-amber-500/40"></div>
           <p className="text-slate-300 text-sm leading-relaxed italic">
             {textContent}
@@ -54,7 +54,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onOpenContact }) => {
 
         <button 
           onClick={() => onOpenContact(fromCountry, toCountry)}
-          className="w-full py-4 bg-amber-500 text-slate-950 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-white transition flex items-center justify-center gap-2"
+          className="w-full py-4 bg-amber-500 text-slate-950 rounded-xl font-black uppercase tracking-widest text-xs hover:bg-white transition flex items-center justify-center gap-2 transform active:scale-95 shadow-xl"
         >
           <i className="fas fa-microchip"></i> Deploy Custom Engine
         </button>
@@ -63,37 +63,39 @@ const Dashboard: React.FC<DashboardProps> = ({ onOpenContact }) => {
   };
 
   return (
-    <div id="dashboard" className="bg-slate-900/95 backdrop-blur-2xl rounded-[3rem] shadow-2xl overflow-hidden orange-glow-border relative z-10">
-      <div className="grid lg:grid-cols-5 min-h-[650px]">
+    <div id="dashboard" className="bg-slate-900/95 backdrop-blur-2xl rounded-[2.5rem] sm:rounded-[3rem] shadow-2xl overflow-hidden orange-glow-border relative z-10">
+      <div className="grid lg:grid-cols-5 min-h-[600px]">
         {/* Input Panel */}
-        <div className="lg:col-span-2 p-10 lg:p-14 space-y-10 border-r border-white/5 bg-slate-950/20">
+        <div className="lg:col-span-2 p-8 sm:p-10 lg:p-14 space-y-10 border-b lg:border-b-0 lg:border-r border-white/5 bg-slate-950/20">
           <div>
-            <h2 className="text-3xl font-black text-white uppercase tracking-tighter">ENGINE<br/><span className="neon-gold-text">CONFIG</span></h2>
+            <h2 className="text-3xl font-black text-white uppercase tracking-tighter leading-tight">ENGINE<br/><span className="neon-gold-text">CONFIG</span></h2>
             <div className="h-1 w-12 bg-amber-500 mt-4"></div>
           </div>
 
           <div className="space-y-8">
             <div className="space-y-4">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Source Region</label>
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block ml-1">Source Region</label>
               <select 
                 value={fromCountry}
                 onChange={(e) => { sound.playClick(); setFromCountry(e.target.value); }}
-                className="w-full p-4 bg-slate-900 border border-slate-800 rounded-xl text-white font-bold outline-none focus:border-amber-500 transition"
+                className="w-full p-4 bg-slate-900 border border-slate-800 rounded-xl text-white font-bold outline-none focus:border-amber-500 transition-all cursor-pointer"
               >
                 {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
               </select>
             </div>
 
             <div className="flex justify-center">
-              <i className="fas fa-random text-slate-700"></i>
+              <div className="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-slate-600 border border-white/5">
+                <i className="fas fa-random"></i>
+              </div>
             </div>
 
             <div className="space-y-4">
-              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Target Embassy</label>
+              <label className="text-[10px] font-black text-slate-500 uppercase tracking-widest block ml-1">Target Embassy</label>
               <select 
                 value={toCountry}
                 onChange={(e) => { sound.playClick(); setToCountry(e.target.value); }}
-                className="w-full p-4 bg-slate-900 border border-slate-800 rounded-xl text-white font-bold outline-none focus:border-amber-500 transition"
+                className="w-full p-4 bg-slate-900 border border-slate-800 rounded-xl text-white font-bold outline-none focus:border-amber-500 transition-all cursor-pointer"
               >
                 {COUNTRIES.map(c => <option key={c.code} value={c.name}>{c.flag} {c.name}</option>)}
               </select>
@@ -102,7 +104,7 @@ const Dashboard: React.FC<DashboardProps> = ({ onOpenContact }) => {
             <button 
               onClick={handleGenerate}
               disabled={loading}
-              className={`w-full py-5 rounded-xl font-black uppercase tracking-widest transition flex items-center justify-center gap-3 ${loading ? 'bg-slate-800 text-slate-500' : 'btn-neon-gold text-slate-950 shadow-lg'}`}
+              className={`w-full py-5 rounded-xl font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 transform active:scale-95 ${loading ? 'bg-slate-800 text-slate-500' : 'btn-neon-gold text-slate-950 shadow-xl'}`}
             >
               {loading ? <i className="fas fa-sync fa-spin"></i> : <i className="fas fa-bolt"></i>}
               {loading ? 'ANALYZING...' : 'INITIALIZE ROUTE'}
@@ -111,14 +113,14 @@ const Dashboard: React.FC<DashboardProps> = ({ onOpenContact }) => {
         </div>
 
         {/* Output Panel */}
-        <div className="lg:col-span-3 p-10 lg:p-14 bg-slate-950/40 relative flex flex-col justify-center">
-          <div className="scanner-line opacity-20"></div>
+        <div className="lg:col-span-3 p-8 sm:p-10 lg:p-14 bg-slate-950/40 relative flex flex-col justify-center min-h-[400px]">
+          <div className="scanner-line opacity-20 pointer-events-none"></div>
           {strategy ? renderStrategy() : (
-            <div className="text-center space-y-6">
-              <div className="w-20 h-20 bg-slate-900 rounded-3xl border border-white/5 flex items-center justify-center mx-auto mb-8">
+            <div className="text-center space-y-6 relative z-10">
+              <div className="w-20 h-20 bg-slate-900 rounded-3xl border border-white/5 flex items-center justify-center mx-auto mb-8 shadow-inner">
                 <i className="fas fa-satellite-dish text-3xl text-slate-700 animate-pulse"></i>
               </div>
-              <p className="text-slate-500 font-black uppercase text-[10px] tracking-[0.4em]">Awaiting Technical Parameters</p>
+              <p className="text-slate-500 font-black uppercase text-[10px] tracking-[0.4em] max-w-[200px] mx-auto">Awaiting Technical Parameters</p>
             </div>
           )}
         </div>

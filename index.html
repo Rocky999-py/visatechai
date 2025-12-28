@@ -3,14 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VISATECH AI | Visa Appointment Automation & Software Engineering</title>
+    <title>VISATECH AI | Visa Appointment Automation & Enterprise Software Engineering</title>
     
-    <!-- Google Search Console Verification -->
+    <!-- SEO Meta Tags -->
     <meta name="google-site-verification" content="fEIF6ft7t_MpQiTlBnh2ABhpVd557XGkDcnMDwPz_xE" />
+    <meta name="description" content="VISATECH AI specializes in enterprise-grade visa appointment booking automation and software development. We build high-speed, non-detectable booking engines for global agencies.">
+    <meta name="keywords" content="visa appointment bot, visa booking automation software, VFS Global bot development, Schengen visa automation, automated visa booking system, VISATECH AI, Apollo IT">
+    <meta name="author" content="VISATECH AI">
+    <meta name="robots" content="index, follow">
     
-    <meta name="description" content="Enterprise-grade software development for visa sector appointment booking automation. AI-driven solutions by VISATECH AI and Apollo IT Specialists.">
-    <meta name="keywords" content="visa appointment automation, visa booking software, automated visa systems, VISATECH AI, Apollo IT, visa bot development">
-    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://visatechai.vercel.app/">
+    <meta property="og:title" content="VISATECH AI - Engineered Visa Automation">
+    <meta property="og:description" content="Proprietary high-frequency booking engines with non-human detectable behavioral DNA.">
+    <meta property="og:image" content="https://visatechai.vercel.app/logo-og.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="VISATECH AI - Visa Sector Automation">
+    <meta property="twitter:description" content="Enterprise automation software for the global visa sector.">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
@@ -77,6 +90,42 @@
           background: linear-gradient(to right, transparent, #f59e0b, transparent);
           animation: scan 3s linear infinite;
           opacity: 0.3;
+        }
+        @keyframes breathe {
+          0%, 100% { transform: scale(1); filter: drop-shadow(0 0 20px rgba(245, 158, 11, 0.2)); opacity: 0.8; }
+          50% { transform: scale(1.05); filter: drop-shadow(0 0 60px rgba(245, 158, 11, 0.5)); opacity: 1; }
+        }
+        .animate-breathe {
+          animation: breathe 8s ease-in-out infinite;
+        }
+        .text-glitch {
+          text-shadow: 0.05em 0 0 #f59e0b, -0.05em -0.025em 0 #f8fafc,
+            -0.025em 0.05em 0 #fbbf24;
+          animation: glitch 500ms infinite;
+        }
+        @keyframes glitch {
+          0% { text-shadow: 0.05em 0 0 #f59e0b, -0.05em -0.025em 0 #f8fafc; }
+          14% { text-shadow: 0.05em 0 0 #f59e0b, -0.05em -0.025em 0 #f8fafc; }
+          15% { text-shadow: -0.05em -0.025em 0 #f59e0b, 0.025em 0.025em 0 #f8fafc; }
+          49% { text-shadow: -0.05em -0.025em 0 #f59e0b, 0.025em 0.025em 0 #f8fafc; }
+          50% { text-shadow: 0.025em 0.05em 0 #f59e0b, 0.05em 0 0 #f8fafc; }
+          99% { text-shadow: 0.025em 0.05em 0 #f59e0b, 0.05em 0 0 #f8fafc; }
+          100% { text-shadow: -0.025em 0 0 #f59e0b, -0.025em -0.025em 0 #f8fafc; }
+        }
+        
+        /* Custom scrollbar for better UX */
+        ::-webkit-scrollbar {
+          width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+          background: #020617;
+        }
+        ::-webkit-scrollbar-thumb {
+          background: #1e293b;
+          border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+          background: #f59e0b;
         }
     </style>
     <script type="importmap">

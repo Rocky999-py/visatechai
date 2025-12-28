@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { sound } from '../services/soundService';
 import { WHATSAPP_NUMBER } from '../constants';
@@ -17,9 +16,12 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, defaultFro
     phone: '',
     message: ''
   });
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!acceptedTerms) return;
+    
     sound.playSuccess();
     
     const text = `*NEW DEPLOYMENT REQUEST - VISATECH AI*\n\n` +
@@ -28,6 +30,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, defaultFro
                  `*WhatsApp:* ${formData.phone}\n` +
                  `*Route:* ${defaultFrom} -> ${defaultTo}\n` +
                  `*Note:* ${formData.message || 'No additional notes.'}\n\n` +
+                 `_I have read and accepted the VISATECH AI Terms and Conditions._\n` +
                  `_Sent via VISATECH AI Portal_`;
     
     const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, '')}?text=${encodeURIComponent(text)}`;
@@ -117,7 +120,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, defaultFro
             <div className="space-y-2">
               <label className="text-[10px] font-black text-amber-500 uppercase tracking-widest ml-2">Special Requirements</label>
               <textarea 
-                rows={3}
+                rows={2}
                 value={formData.message}
                 onChange={(e) => setFormData({...formData, message: e.target.value})}
                 placeholder="DESCRIBE YOUR SYSTEM NEEDS..." 
@@ -125,9 +128,20 @@ const ContactModal: React.FC<ContactModalProps> = ({ isOpen, onClose, defaultFro
               ></textarea>
             </div>
 
+            {/* Mandatory Terms Checkbox */}
+            <div className="flex items-start gap-3 p-4 bg-slate-900/30 rounded-2xl border border-white/5 group cursor-pointer" onClick={() => setAcceptedTerms(!acceptedTerms)}>
+              <div className={`mt-1 w-5 h-5 rounded border-2 flex items-center justify-center transition-all ${acceptedTerms ? 'bg-amber-500 border-amber-500' : 'border-slate-700 bg-transparent'}`}>
+                {acceptedTerms && <i className="fas fa-check text-[10px] text-slate-950"></i>}
+              </div>
+              <p className="text-[11px] text-slate-400 font-bold leading-tight select-none">
+                I agree to the <span className="text-amber-500 underline underline-offset-2">Terms and Conditions</span> and understand the technical protocol of VISATECH AI.
+              </p>
+            </div>
+
             <button 
               type="submit"
-              className="w-full py-5 btn-neon-gold text-slate-950 rounded-2xl font-black uppercase tracking-widest text-sm shadow-2xl hover:scale-[1.02] transition transform active:scale-95 flex items-center justify-center gap-3"
+              disabled={!acceptedTerms}
+              className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest text-sm shadow-2xl transition transform active:scale-95 flex items-center justify-center gap-3 ${acceptedTerms ? 'btn-neon-gold text-slate-950 hover:scale-[1.02]' : 'bg-slate-800 text-slate-500 cursor-not-allowed grayscale'}`}
             >
               <i className="fab fa-whatsapp text-xl"></i>
               Connect via WhatsApp
