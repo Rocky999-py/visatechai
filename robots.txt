@@ -1,5 +1,4 @@
-
 User-agent: *
 Allow: /
 
-Sitemap: https://visatech-ai.vercel.app/sitemap.xml
+Sitemap: https://visatechai.vercel.app/sitemap.xml

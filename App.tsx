@@ -15,10 +15,12 @@ const App: React.FC = () => {
   const [page, setPage] = useState<AppState>('home');
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
   const [activeRoute, setActiveRoute] = useState({ from: '', to: '' });
+  const [sysTime, setSysTime] = useState(new Date().toLocaleTimeString());
 
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [page]);
+    const timer = setInterval(() => setSysTime(new Date().toLocaleTimeString()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const setPageWithSound = (p: AppState) => {
     sound.playTransition();
@@ -28,39 +30,32 @@ const App: React.FC = () => {
   const scrollToSection = (id: string) => {
     if (page !== 'home') {
       setPageWithSound('home');
-      setTimeout(() => {
-        const element = document.getElementById(id);
-        if (element) element.scrollIntoView({ behavior: 'smooth' });
-      }, 300);
+      setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 300);
       return;
     }
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
-  const handleOpenContact = (from?: string, to?: string) => {
-    if (from && to) {
-      setActiveRoute({ from, to });
-    }
-    setIsContactModalOpen(true);
-  };
-
-  const openWhatsAppDirect = () => {
-    sound.playClick();
-    window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, '')}`, '_blank');
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
 
   if (page === 'docs') return <Documentation onBack={() => setPageWithSound('home')} />;
   if (page === 'terms' || page === 'privacy') return <Legal type={page} onBack={() => setPageWithSound('home')} />;
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 overflow-x-hidden selection:bg-orange-500/40">
-      <Navbar 
-        onContact={() => setIsContactModalOpen(true)} 
-        onScrollTo={scrollToSection} 
-      />
+    <div className="min-h-screen flex flex-col bg-slate-950 text-slate-100 overflow-x-hidden">
+      {/* Top System Ticker */}
+      <div className="bg-amber-500 text-slate-950 py-2 px-4 flex justify-between items-center font-mono text-[10px] font-black uppercase tracking-widest z-[60] fixed top-0 w-full">
+        <div className="flex gap-6 overflow-hidden">
+          <span className="flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-slate-950 animate-pulse"></div> MATRIX_V4_ONLINE</span>
+          <span className="hidden sm:inline">GLOBAL_LATENCY: 4MS</span>
+          <span className="hidden md:inline">DEPLOYED_NODES: 1,482</span>
+          <span className="hidden lg:inline">SUCCESS_RATE: 99.8%</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span>{sysTime}</span>
+          <span className="bg-slate-950 text-amber-500 px-2 rounded">SECURE</span>
+        </div>
+      </div>
+
+      <Navbar onContact={() => setIsContactModalOpen(true)} onScrollTo={scrollToSection} />
 
       <ContactModal 
         isOpen={isContactModalOpen} 
@@ -71,247 +66,154 @@ const App: React.FC = () => {
 
       <main className="flex-grow">
         {/* Hero Section */}
-        <section id="hero" className="relative pt-32 pb-44 hero-mesh overflow-hidden">
-          <div className="absolute top-0 left-0 w-full h-full opacity-30 pointer-events-none">
-            <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-orange-500/10 blur-[120px] rounded-full animate-pulse"></div>
-            <div className="absolute bottom-[20%] left-[-10%] w-[500px] h-[500px] bg-blue-500/10 blur-[120px] rounded-full"></div>
-          </div>
+        <section id="hero" className="relative pt-44 pb-32 hero-mesh overflow-hidden">
+          <div className="absolute inset-0 opacity-10 pointer-events-none" style={{backgroundImage: 'radial-gradient(#f59e0b 0.5px, transparent 0.5px)', backgroundSize: '24px 24px'}}></div>
           
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-            <div className="flex justify-center mb-10">
-              <div className="relative">
-                <div className="absolute inset-0 bg-amber-500/20 blur-2xl rounded-full scale-150 animate-pulse"></div>
-                <Logo size={100} className="relative z-10 drop-shadow-2xl" />
-              </div>
+          <div className="max-w-7xl mx-auto px-4 text-center relative z-10">
+            <div className="mb-12 inline-flex items-center gap-3 bg-slate-900/80 border border-amber-500/20 px-6 py-2 rounded-full">
+              <div className="w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_10px_#f59e0b]"></div>
+              <span className="text-[10px] font-black text-amber-500 uppercase tracking-widest">Apollo IT Engineering Matrix</span>
             </div>
             
-            <h1 className="text-5xl md:text-8xl font-black text-white tracking-tighter mb-8 leading-[1] uppercase">
-              REVOLUTIONIZING <br/>
-              <span className="neon-gold-text">VISA AUTOMATION</span>
+            <h1 className="text-6xl md:text-9xl font-black text-white tracking-tighter mb-10 leading-[0.85] uppercase">
+              ELITE <span className="neon-gold-text">BOT</span><br/>
+              DEVELOPMENT
             </h1>
             
-            <div className="flex flex-col items-center gap-4 mb-14">
-              <span className="bg-slate-900/50 border border-amber-500/30 text-amber-500 px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-[0.25em]">
-                Enterprise-Grade Development
-              </span>
-              <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-medium">
-                We develop high-performance software for automated visa appointment booking. 
-                Custom solutions for global agencies by <span className="text-white font-bold">Apollo IT Experts</span>.
-              </p>
-            </div>
+            <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-medium mb-12">
+              High-frequency automation software for visa agencies. 
+              Built with non-human detectable behavioral patterns.
+            </p>
             
-            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-              <button 
-                onClick={() => scrollToSection('dashboard')}
-                className="btn-neon-gold text-slate-950 w-full sm:w-auto px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-widest shadow-[0_20px_40px_rgba(245,158,11,0.25)] hover:scale-105 active:scale-95 transition"
-              >
+            <div className="flex flex-col sm:flex-row gap-6 justify-center">
+              <button onClick={() => scrollToSection('dashboard')} className="btn-neon-gold text-slate-950 px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-widest shadow-2xl">
                 Configure Build
               </button>
-              <button 
-                onClick={() => setPageWithSound('docs')}
-                className="bg-slate-900/50 backdrop-blur-md text-white border border-slate-700 w-full sm:w-auto px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-widest hover:border-amber-500 transition shadow-xl"
-              >
-                View Protocol
+              <button onClick={() => setPageWithSound('docs')} className="bg-slate-900/50 backdrop-blur-md text-white border border-slate-700 px-12 py-5 rounded-2xl font-black text-lg uppercase tracking-widest">
+                System Specs
               </button>
             </div>
           </div>
         </section>
 
-        {/* Dashboard Section */}
-        <section className="max-w-7xl mx-auto px-4 py-20 -mt-24 relative z-20">
-          <Dashboard onOpenContact={handleOpenContact} />
+        <section className="max-w-7xl mx-auto px-4 -mt-20 relative z-20">
+          <Dashboard onOpenContact={(f, t) => { setActiveRoute({from: f, to: t}); setIsContactModalOpen(true); }} />
         </section>
 
-        {/* Technical Stats */}
-        <section className="py-20 bg-slate-950/50">
-          <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
-            {[
-              { label: 'Specialists', val: '30+', icon: 'users-gear' },
-              { label: 'Uptime', val: '99.9%', icon: 'bolt' },
-              { label: 'Latency', val: '< 10ms', icon: 'microchip' },
-              { label: 'Countries', val: '190+', icon: 'globe' },
-            ].map((s, i) => (
-              <div key={i} className="text-center group p-6 rounded-3xl hover:bg-white/5 transition duration-500">
-                <i className={`fas fa-${s.icon} text-amber-500/50 group-hover:text-amber-500 mb-4 text-xl transition-colors`}></i>
-                <div className="text-4xl font-black text-white mb-1">{s.val}</div>
-                <div className="text-[10px] text-slate-500 uppercase font-black tracking-[0.3em]">{s.label}</div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Features Section */}
-        <section id="features" className="py-40 bg-slate-950 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-1/2 h-full bg-orange-600/[0.02] blur-[150px] -z-10"></div>
+        {/* Global Infrastructure */}
+        <section className="py-40 bg-slate-950">
           <div className="max-w-7xl mx-auto px-4">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-8">
-              <div className="max-w-2xl">
-                <span className="text-amber-500 font-black uppercase tracking-[0.4em] text-xs">Engine Capabilities</span>
-                <h2 className="text-5xl md:text-7xl font-black text-white mt-4 leading-tight uppercase tracking-tighter">Elite <br/><span className="neon-gold-text">Engineering</span></h2>
-              </div>
-              <p className="text-slate-400 max-w-sm text-lg font-medium border-l-2 border-slate-800 pl-8 py-2">
-                Our software development team utilizes advanced ML algorithms to solve the most complex booking challenges on the web.
-              </p>
-            </div>
-            
-            <div className="grid md:grid-cols-3 gap-10">
-              {[
-                { 
-                  title: 'Bot Protection Bypass', 
-                  desc: 'We develop custom fingerprinting techniques to bypass Cloudflare, Akamai, and specialized embassy firewalls.',
-                  icon: 'shield-halved'
-                },
-                { 
-                  title: 'AI Behavioral Logic', 
-                  desc: 'Neural networks simulate human-like interactions, including randomized mouse movement and typing patterns.',
-                  icon: 'brain-circuit'
-                },
-                { 
-                  title: 'Real-time Matrix', 
-                  desc: 'Distributed node networks across 190+ countries ensure low-latency requests from any location.',
-                  icon: 'network-wired'
-                }
-              ].map((f, i) => (
-                <div key={i} className="bg-slate-900/30 p-12 rounded-[3rem] orange-glow-border transition-all duration-700 group hover:-translate-y-4">
-                  <div className="w-20 h-20 bg-slate-950 border border-orange-500/10 rounded-3xl mb-10 flex items-center justify-center text-4xl text-white group-hover:text-amber-400 transition-colors shadow-inner">
-                    <i className={`fas fa-${f.icon}`}></i>
+            <div className="grid md:grid-cols-2 gap-20 items-center">
+              <div className="space-y-10">
+                <span className="text-amber-500 font-black uppercase tracking-[0.4em] text-xs">Infrastructure</span>
+                <h2 className="text-5xl font-black text-white uppercase tracking-tighter leading-tight">Global Node <br/><span className="neon-gold-text">Matrix</span></h2>
+                <p className="text-slate-400 text-lg leading-relaxed">
+                  Our development team maintains a proprietary network of residential backbones across 190+ countries. 
+                  Every software build we deliver includes dynamic endpoint rotation as standard.
+                </p>
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="bg-slate-900/50 p-6 rounded-3xl border border-white/5">
+                    <div className="text-3xl font-black text-white mb-2">1,500+</div>
+                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Active Proxy Nodes</div>
                   </div>
-                  <h3 className="text-2xl font-black text-white mb-6 uppercase tracking-tight group-hover:text-amber-400 transition-colors">{f.title}</h3>
-                  <p className="text-slate-400 leading-relaxed font-medium">{f.desc}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Pricing */}
-        <section id="pricing" className="py-40 relative">
-          <div className="max-w-7xl mx-auto px-4">
-            <div className="text-center mb-32">
-              <span className="text-amber-500 font-black uppercase tracking-[0.4em] text-xs">Development Tiers</span>
-              <h2 className="text-5xl md:text-6xl font-black text-white mt-4 uppercase tracking-tighter">Software <span className="neon-gold-text">Licenses</span></h2>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {PRICING_PLANS.map((plan, i) => (
-                <div key={i} className={`group p-px bg-gradient-to-br ${plan.type === PlanType.EXPRESS ? 'from-amber-500 to-orange-600' : 'from-white/10 to-transparent'} rounded-[3.5rem] transition transform hover:scale-[1.03]`}>
-                  <div className="bg-slate-950 h-full p-10 rounded-[3.4rem] flex flex-col relative overflow-hidden">
-                    {plan.type === PlanType.EXPRESS && (
-                      <div className="absolute top-0 right-0 bg-amber-500 text-slate-950 px-6 py-2 rounded-bl-3xl text-[10px] font-black uppercase tracking-widest">
-                        Most Popular
-                      </div>
-                    )}
-                    <div className="mb-12">
-                      <h3 className="text-xs font-black text-amber-500 uppercase tracking-[0.4em] mb-4">{plan.type}</h3>
-                      <div className="flex items-baseline gap-2">
-                        {plan.type === PlanType.CUSTOM ? (
-                          <span className="text-3xl font-black text-white uppercase tracking-tighter">Enterprise</span>
-                        ) : (
-                          <>
-                            <span className="text-5xl font-black text-white">${plan.minPrice}</span>
-                            <span className="text-slate-600 font-bold text-sm tracking-widest">/dev</span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    
-                    <ul className="space-y-5 mb-14 flex-grow">
-                      {plan.features.map((feat, idx) => (
-                        <li key={idx} className="flex items-start gap-4 text-xs font-bold text-slate-400 group-hover:text-slate-200 transition-colors">
-                          <i className="fas fa-circle-check text-amber-500/60 mt-0.5"></i> <span>{feat}</span>
-                        </li>
-                      ))}
-                    </ul>
-                    
-                    <button 
-                      onClick={() => handleOpenContact()}
-                      className={`w-full py-5 rounded-2xl font-black uppercase tracking-widest transition text-xs ${plan.type === PlanType.EXPRESS || plan.type === PlanType.CUSTOM ? 'btn-neon-gold text-slate-950' : 'bg-white/5 text-white hover:bg-white/10 border border-white/10'}`}
-                    >
-                      {plan.type === PlanType.CUSTOM ? 'Contact Architect' : 'Initialize Order'}
-                    </button>
+                  <div className="bg-slate-900/50 p-6 rounded-3xl border border-white/5">
+                    <div className="text-3xl font-black text-white mb-2">&lt; 150ms</div>
+                    <div className="text-[10px] text-slate-500 uppercase font-black tracking-widest">Avg Response Time</div>
                   </div>
                 </div>
-              ))}
+              </div>
+              <div className="relative">
+                <div className="absolute inset-0 bg-amber-500/10 blur-[100px] rounded-full"></div>
+                <div className="bg-slate-900 aspect-square rounded-[4rem] border border-amber-500/20 p-8 relative overflow-hidden flex items-center justify-center">
+                   <i className="fas fa-globe-americas text-[15rem] text-amber-500/20 absolute -right-10 -bottom-10"></i>
+                   <div className="grid grid-cols-3 gap-6 relative z-10">
+                     {[...Array(9)].map((_, i) => (
+                       <div key={i} className="w-12 h-12 bg-slate-800 rounded-xl border border-white/5 flex items-center justify-center text-amber-500 animate-pulse" style={{animationDelay: `${i*100}ms`}}>
+                         <i className="fas fa-server"></i>
+                       </div>
+                     ))}
+                   </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
 
-        {/* Final CTA */}
-        <section className="py-60 text-center relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-900/10 to-transparent -z-10"></div>
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-amber-500/[0.03] rounded-full blur-[180px] -z-10"></div>
-          
+        {/* FAQ Section */}
+        <section id="faq" className="py-40 bg-slate-950/50">
           <div className="max-w-4xl mx-auto px-4">
-            <h2 className="text-6xl md:text-8xl font-black text-white mb-12 leading-tight tracking-tighter uppercase">READY FOR <br/><span className="neon-gold-text">AUTOMATION?</span></h2>
-            <button 
-              onClick={() => handleOpenContact()}
-              className="btn-neon-gold text-slate-950 px-20 py-7 rounded-[2rem] font-black text-xl uppercase tracking-widest shadow-[0_30px_60px_rgba(245,158,11,0.3)] hover:scale-110 active:scale-95 transition-all duration-300"
-            >
-              Consult Development Team
-            </button>
-            <p className="mt-12 text-slate-500 font-black uppercase tracking-[0.4em] text-[10px]">Worldwide Specialist Deployment</p>
+            <div className="text-center mb-24">
+              <h2 className="text-4xl font-black text-white uppercase tracking-tighter">Protocol <span className="neon-gold-text">FAQ</span></h2>
+            </div>
+            <div className="space-y-6">
+              {[
+                { q: "How do you bypass Akamai/Cloudflare?", a: "We develop custom TLS fingerprinting libraries that mimic real browser handshakes at the socket level, bypassing behavioral challenges." },
+                { q: "Is the software legal for agency use?", a: "Our software is developed as a technical tool for workflow optimization. Clients are responsible for ensuring compliance with their local embassy terms." },
+                { q: "What is your typical development cycle?", a: "Standard builds take 7-14 days. Custom enterprise architectures requiring ML behavioral training can take up to 30 days." }
+              ].map((item, i) => (
+                <div key={i} className="bg-slate-900/30 border border-white/5 p-8 rounded-[2rem] hover:border-amber-500/30 transition duration-500 group">
+                  <h4 className="text-white font-black uppercase tracking-tight mb-4 flex justify-between items-center">
+                    {item.q}
+                    <i className="fas fa-plus text-amber-500 text-xs group-hover:rotate-45 transition"></i>
+                  </h4>
+                  <p className="text-slate-500 text-sm leading-relaxed">{item.a}</p>
+                </div>
+              ))}
+            </div>
           </div>
+        </section>
+
+        {/* Pricing Tiers */}
+        <section id="pricing" className="py-40 bg-slate-950">
+           <div className="max-w-7xl mx-auto px-4">
+             <div className="text-center mb-32">
+                <span className="text-amber-500 font-black uppercase tracking-[0.4em] text-xs">Licensing</span>
+                <h2 className="text-5xl font-black text-white mt-4 uppercase tracking-tighter">Development <span className="neon-gold-text">Tiers</span></h2>
+             </div>
+             <div className="grid lg:grid-cols-4 gap-8">
+               {PRICING_PLANS.map((plan, i) => (
+                 <div key={i} className="bg-slate-900/40 p-10 rounded-[3rem] border border-white/5 hover:border-amber-500/40 transition-all flex flex-col group">
+                   <h3 className="text-amber-500 font-black uppercase tracking-widest text-xs mb-8">{plan.type}</h3>
+                   <div className="text-4xl font-black text-white mb-4">
+                     {plan.type === 'CUSTOM' ? 'POA' : `$${plan.minPrice}`}
+                   </div>
+                   <p className="text-slate-500 text-sm mb-10 h-12 overflow-hidden">{plan.description}</p>
+                   <ul className="space-y-4 mb-12 flex-grow">
+                     {plan.features.slice(0, 4).map((f, j) => (
+                       <li key={j} className="text-xs font-bold text-slate-400 flex items-center gap-3">
+                         <i className="fas fa-check text-amber-500/50"></i> {f}
+                       </li>
+                     ))}
+                   </ul>
+                   <button onClick={() => setIsContactModalOpen(true)} className="w-full py-4 rounded-xl font-black uppercase tracking-widest text-xs bg-white/5 text-white hover:bg-amber-500 hover:text-slate-950 transition duration-500">
+                     Initialize
+                   </button>
+                 </div>
+               ))}
+             </div>
+           </div>
         </section>
       </main>
 
-      <footer className="bg-slate-950 border-t border-white/5 pt-32 pb-16 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid md:grid-cols-4 gap-16 mb-24">
-            <div className="col-span-2 space-y-10">
-              <div className="flex items-center gap-4">
-                <Logo size={48} />
-                <span className="font-black text-3xl tracking-tighter text-white uppercase">VISATECH <span className="text-amber-500">AI</span></span>
-              </div>
-              <p className="text-slate-500 font-medium max-w-sm text-lg leading-relaxed">
-                The world's leading specialists in visa sector appointment booking software automation development. Powered by <span className="text-slate-300 font-bold">Apollo IT Matrix</span>.
-              </p>
-            </div>
-            
-            <div className="space-y-6">
-              <h5 className="font-black text-white uppercase text-[10px] tracking-[0.4em] mb-8">Security & Protocol</h5>
-              <button onClick={() => setPageWithSound('privacy')} className="block text-slate-500 hover:text-amber-500 font-bold transition text-left text-sm uppercase tracking-widest">Data Privacy</button>
-              <button onClick={() => setPageWithSound('terms')} className="block text-slate-500 hover:text-amber-500 font-bold transition text-left text-sm uppercase tracking-widest">Service Terms</button>
-              <button onClick={() => setPageWithSound('docs')} className="block text-slate-500 hover:text-amber-500 font-bold transition text-left text-sm uppercase tracking-widest">Core Documentation</button>
-            </div>
-
-            <div className="space-y-6">
-              <h5 className="font-black text-white uppercase text-[10px] tracking-[0.4em] mb-8">Global Outreach</h5>
-              <div className="flex gap-6">
-                {[
-                  { icon: 'linkedin-in', link: '#' },
-                  { icon: 'x-twitter', link: '#' },
-                  { icon: 'telegram', link: '#' },
-                  { icon: 'github', link: '#' },
-                ].map((s, i) => (
-                  <a key={i} href={s.link} className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-slate-400 hover:text-amber-500 hover:bg-white/10 transition-all text-xl">
-                    <i className={`fab fa-${s.icon}`}></i>
-                  </a>
-                ))}
-              </div>
-            </div>
-          </div>
-          <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div className="text-slate-600 font-black text-[10px] uppercase tracking-[0.5em]">
-              © 2026 VISATECH AI • ENGINEERED BY APOLLO IT
-            </div>
-            <div className="flex items-center gap-10 opacity-30">
-              <i className="fab fa-cc-visa text-3xl"></i>
-              <i className="fab fa-cc-mastercard text-3xl"></i>
-              <i className="fab fa-cc-stripe text-3xl"></i>
-              <i className="fab fa-bitcoin text-3xl"></i>
-            </div>
+      <footer className="bg-slate-950 border-t border-white/5 pt-32 pb-16">
+        <div className="max-w-7xl mx-auto px-4 text-center">
+          <Logo size={60} className="mx-auto mb-10 opacity-50" />
+          <p className="text-slate-600 font-black text-[10px] uppercase tracking-[0.5em] mb-10">
+            © 2026 VISATECH AI • Apollo IT Development Matrix
+          </p>
+          <div className="flex justify-center gap-10">
+            <button onClick={() => setPageWithSound('privacy')} className="text-slate-500 hover:text-white text-[10px] font-black uppercase tracking-widest">Privacy Protocol</button>
+            <button onClick={() => setPageWithSound('terms')} className="text-slate-500 hover:text-white text-[10px] font-black uppercase tracking-widest">Terms of Service</button>
           </div>
         </div>
       </footer>
 
-      {/* WhatsApp Floating */}
-      <div className="fixed bottom-10 right-10 z-[100] group">
-        <div className="absolute inset-0 bg-green-500/20 blur-2xl rounded-full scale-150 animate-pulse group-hover:scale-[2] transition-transform"></div>
+      <div className="fixed bottom-10 right-10 z-[100]">
         <button 
-          onClick={openWhatsAppDirect}
-          className="w-24 h-24 bg-green-500 text-white rounded-[2.5rem] flex items-center justify-center text-5xl shadow-[0_20px_50px_rgba(34,197,94,0.3)] hover:scale-110 active:scale-90 transition-all duration-300 relative overflow-hidden"
+          onClick={() => window.open(`https://wa.me/${WHATSAPP_NUMBER.replace(/\+/g, '')}`, '_blank')}
+          className="w-20 h-20 bg-green-500 text-white rounded-[2rem] flex items-center justify-center text-4xl shadow-2xl hover:scale-110 active:scale-90 transition-all"
         >
-          <i className="fab fa-whatsapp relative z-10"></i>
+          <i className="fab fa-whatsapp"></i>
         </button>
       </div>
     </div>

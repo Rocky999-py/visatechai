@@ -1,24 +1,26 @@
 import { GoogleGenAI } from "@google/genai";
 
 export const generateVisaStrategy = async (fromCountry: string, toCountry: string) => {
-  // Always create a new GoogleGenAI instance right before making an API call
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   
   try {
-    // Using gemini-3-pro-preview for complex text tasks involving advanced technical reasoning
     const response = await ai.models.generateContent({
       model: 'gemini-3-pro-preview',
-      contents: `Generate a brief, highly professional technical overview for a software automation strategy for visa appointment booking from ${fromCountry} to ${toCountry}. 
-      Mention specific technical challenges (like bot protection, high traffic periods) and how an AI-powered system (VISATECH AI) would solve them using ML and rotating proxies. 
-      Keep it under 150 words. Format as professional advice.`,
+      contents: `You are the lead architect at VISATECH AI. 
+      Generate a professional technical deployment strategy for a visa appointment automation bot for the route: ${fromCountry} to ${toCountry}.
+      
+      The output MUST be in two parts:
+      1. A technical log in JSON format (wrapped in triple backticks) containing: "endpoint_status", "fingerprint_mode", "ip_rotation_strategy", and "expected_latency".
+      2. A concise engineering summary (100 words max) explaining how our ML behavioral models will bypass the specific portal protection for this route.
+      
+      Use advanced technical terminology (e.g., Canvas Fingerprinting, TLS Handshake Obfuscation, Residential Proxy Backbones).`,
       config: {
-        temperature: 0.7,
+        temperature: 0.8,
       }
     });
-    // Safely extract text output from the response object
-    return response.text || "Our technical strategy engine is currently under maintenance. Please contact our support team on WhatsApp for a custom roadmap.";
+    return response.text || "PROTOCOL_ERROR: Matrix initialization failed. Contact system architect.";
   } catch (error) {
     console.error("Gemini AI Error:", error);
-    return "Our AI is analyzing the complexity of this route. Please contact our experts on WhatsApp for a detailed roadmap.";
+    return "ANALYSIS_OFFLINE: Please initialize manual consultation via WhatsApp Protocol.";
   }
 };
